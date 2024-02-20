@@ -33,6 +33,10 @@ class AccountDataManager: ObservableObject { // 继承 ObservableObject 协议
     
     @Published var currentAccountData: AccountData? // 使用 @Published 属性包装器
     
+    init(){
+        loadAccountData()
+    }
+    
     // 保存帐户数据到 UserDefaults
     func saveAccountData(_ accountData: AccountData) {
         do {

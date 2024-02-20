@@ -231,6 +231,9 @@ struct AccountManage: View{
                 }
                 
             }
+        } .onAppear {
+            //在视图出现时，将AccountDataManager.shared.currentAccountData?.is_login的值赋给isLogin
+            self.isLogin = AccountDataManager.shared.currentAccountData?.is_login ?? false
         }
     }
 }
