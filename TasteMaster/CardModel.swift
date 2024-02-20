@@ -242,10 +242,10 @@ func CardPlacer(cardInfoList:[CardInfo],color: ColorScheme)->some View{
                     .frame(width: card.width, height: card.height)
                     .background(CookingCard.color)
                     .cornerRadius(card.radius)
-                    .shadow(color: color == .dark ? Color.cyan.opacity(0.2) : Color.black.opacity(0.2), radius: 10, x: 10, y: 10)
+                    .shadow(color: color == .dark ? Color.cyan.opacity(0.4) : Color.black.opacity(0.4), radius: 10, x: 10, y: 10)
                     .overlay(
                         RoundedRectangle(cornerRadius: card.radius)
-                            .stroke(color == .dark ? Color.brown : Color.white, lineWidth: 1)
+                            .stroke(color == .dark ? Color.yellow : Color.white, lineWidth: 2)
                     )
                     .foregroundColor(.white)
                     .font(card.fontSize)

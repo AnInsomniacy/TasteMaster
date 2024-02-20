@@ -11,7 +11,8 @@ import SwiftUI
 struct OnlineReview: View{
     var body: some View{
         ScrollView{
-            Text("开发中").font(.title).padding()
+            //加粗字体
+            Text("开发中").font(.title).bold().padding()
         }
     }
 }
