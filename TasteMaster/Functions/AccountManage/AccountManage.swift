@@ -66,7 +66,7 @@ struct AccountManage: View{
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
                                     .padding()
                             }
-
+                            
                             
                             VStack(spacing: -20){
                                 Text(AccountDataManager.shared.currentAccountData?.username ?? "未登录")
@@ -106,7 +106,7 @@ struct AccountManage: View{
                                     } else {
                                         Text("我的关注: ? ->").foregroundColor(Color.primary)
                                     }
-
+                                    
                                 }
                             )
                             .padding()
@@ -241,121 +241,308 @@ struct AccountManage: View{
 //登录页面
 struct LoginPage: View{
     
-    @State private var username: String = ""
-    @State private var password: String = ""
+    var loginViewModel = LoginViewModel()
+    var currentUserInfoViewModel = CurrentUserInfoViewModel()
+    
+    // 用于存储输入的用户名和密码
+    @State private var username = ""
+    @State private var password = ""
     
     @StateObject private var accountManager = AccountDataManager.shared
-
+    
     @Binding var startLogin: Bool
     @Binding var isLogin: Bool
     
+    @State private var buttonText = "立即登录"
+    @State private var buttonColor = Color.green
+    
     var body: some View{
-        ScrollView{
-            Text("请先登录😁")
-                .font(.title)
-                .fontWeight(.bold)
-                .padding()
-            
-            //用户名输入框
-            HStack{
-                Image(systemName: "person")
-                    .padding()
-                    .scaleEffect(1.8)
-                
-                TextField("请输入用户名", text: $username)
-                    .padding()
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(10)
-                    .frame(width: 260)
-            }.padding()
-            
-            //密码输入框
-            HStack{
-                Image(systemName: "lock")
-                    .padding()
-                    .scaleEffect(1.8)
-                
-                SecureField("请输入密码", text: $password)
-                    .padding()
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(10)
-                    .frame(width: 260)
-            }.padding()
-            
-            //注册和登录
-            HStack(spacing: 24){
-                
-                // 注册账户按钮
-                Button(action: {
-                    // 在这里添加跳转到注册页面的逻辑
-                }) {
-                    Text("注册账户")
-                        .foregroundColor(.white) // 文本颜色
-                        .font(.headline) // 字体大小和样式
+        NavigationStack{
+            ScrollView(){
+                VStack(spacing: -20){
+                    Text("请先登录😁")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .padding()
                     
-                }
-                .frame(width: 114)
-                .padding() // 内边距
-                .background(Color.blue) // 背景颜色
-                .cornerRadius(10) // 圆角
-                
-                // 立即登录按钮
-                Button(action: {
+                    VStack(spacing: -10){
+                        //用户名输入框
+                        HStack{
+                            Image(systemName: "person")
+                                .padding()
+                                .scaleEffect(1.8)
+                            
+                            TextField("请输入用户名", text: $username)
+                                .padding()
+                                .background(Color.gray.opacity(0.2))
+                                .cornerRadius(10)
+                            
+                        }.padding()
+                        
+                        //密码输入框
+                        HStack{
+                            Image(systemName: "lock")
+                                .padding()
+                                .scaleEffect(1.8)
+                            
+                            SecureField("请输入密码", text: $password)
+                                .padding()
+                                .background(Color.gray.opacity(0.2))
+                                .cornerRadius(10)
+                            
+                        }.padding()
+                    }.padding()
                     
-                    // 模拟登录成功后更新账户数据
-                    let loggedInAccountData = AccountData(user_id: 1, username: username, follower_num: 0, followed_user_list: "", fans_num: 0, fans_user_list: "", article_num: 0, article_list: "", avatar_url: "https://qiniu.jingpin365.com/uploads/weibo/201912/9e16d1d636af8434d50e1241bb59163e.jpeg", self_introduction: "前途似海，来日方长", access_token: "your_access_token", is_login: true)
+                    //注册和登录
+                    HStack(spacing: 24){
+                        
+                        NavigationLink(destination:RegisterAccount()){
+                            
+                            Text("注册账户")
+                                .foregroundColor(.white) // 文本颜色
+                                .font(.headline) // 字体大小和样式
+                            
+                        }   .frame(width: 114)
+                            .padding() // 内边距
+                            .background(Color.blue) // 背景颜色
+                            .cornerRadius(10) // 圆角
+                        
+                        
+                        // 立即登录按钮
+                        Button(action: {
+                            Task {
+                                do {
+                                    // 更新按钮状态为“正在登录”
+                                    buttonText = "正在登录"
+                                    buttonColor = Color.gray
+                                    
+                                    // 调用异步登录函数
+                                    try await loginViewModel.login(username: username, password: password)
+                                    
+                                    // 根据登录结果执行相应操作
+                                    if loginViewModel.loginResult {
+                                        print("登录成功，访问令牌：\(loginViewModel.accessToken ?? "")")
+                                        // 在这里可以进行导航、显示成功提示等操作
+                                        buttonText = "登录成功"
+                                        buttonColor = Color.blue
+                                        
+                                        //使用access token获取详细信息
+                                        // 调用获取用户信息函数
+                                        do {
+                                            try await currentUserInfoViewModel.getCurrentUserInfo(access_token: loginViewModel.accessToken ?? "")
+                                            
+                                            // 检查是否成功获取用户信息
+                                            if let userInfo = currentUserInfoViewModel.userInfo {
+                                                // 输出用户信息
+                                                print("用户ID: \(userInfo.user_id)")
+                                                print("用户名: \(userInfo.username)")
+                                                print("头像URL: \(userInfo.avatarUrl)")
+                                                print("个人简介: \(userInfo.selfIntroduction)")
+                                                print("粉丝数: \(userInfo.fanNum)")
+                                                print("关注数: \(userInfo.followerNum)")
+                                                print("文章数: \(userInfo.articleNum)")
+                                                
+                                                // 保存状态，持久化存储
+                                                // 用户ID
+                                                AccountDataManager.shared.updateAccountDataField(\.user_id, value: userInfo.user_id)
+                                                // 头像URL
+                                                AccountDataManager.shared.updateAccountDataField(\.avatar_url, value: userInfo.avatarUrl)
+                                                // 个人简介
+                                                AccountDataManager.shared.updateAccountDataField(\.self_introduction, value: userInfo.selfIntroduction)
+                                                // 粉丝数
+                                                AccountDataManager.shared.updateAccountDataField(\.fans_num, value: userInfo.fanNum)
+                                                // 关注数
+                                                AccountDataManager.shared.updateAccountDataField(\.follower_num, value: userInfo.followerNum)
+                                                // 文章数
+                                                AccountDataManager.shared.updateAccountDataField(\.article_num, value: userInfo.articleNum)
+                                                // 登录状态
+                                                AccountDataManager.shared.updateAccountDataField(\.is_login, value: true)
+                                                // 访问令牌
+                                                AccountDataManager.shared.updateAccountDataField(\.access_token, value: loginViewModel.accessToken ?? "N/A")
+                                                
+                                                
+                                            } else {
+                                                print("获取用户信息失败")
+                                            }
+                                        } catch {
+                                            print("获取用户信息时发生错误: \(error)")
+                                        }
+                                        
+                                        //保存状态，持久化存储
+                                        //用户名
+                                        AccountDataManager.shared.updateAccountDataField(\.username, value: username)
+                                        //密码
+                                        AccountDataManager.shared.updateAccountDataField(\.password, value: password)
+                                        //登录状态
+                                        AccountDataManager.shared.updateAccountDataField(\.is_login, value: true)
+                                        //访问令牌
+                                        AccountDataManager.shared.updateAccountDataField(\.access_token, value: loginViewModel.accessToken ?? "N/A")
+                                        
+                                        
+                                        try await Task.sleep(nanoseconds: 1 * 1_000_000_000) // 1秒 = 1,000,000,000纳秒
+                                        isLogin = true
+                                        startLogin = false
+                                        
+                                    } else {
+                                        print("登录失败")
+                                        // 在这里可以显示失败提示等操作
+                                        buttonText = "登录失败"
+                                        buttonColor = Color.red
+                                        // 1秒后还原按钮状态
+                                        try await Task.sleep(nanoseconds: 2 * 1_000_000_000) // 1秒 = 1,000,000,000纳秒
+                                        buttonText = "立即登录"
+                                        buttonColor = Color.green
+                                    }
+                                } catch {
+                                    // 处理登录错误
+                                    print("登录出错: \(error)")
+                                    // 在这里可以显示错误提示等操作
+                                    buttonText = "登录出错"
+                                    buttonColor = Color.red
+                                    // 1秒后还原按钮状态
+                                    try await Task.sleep(nanoseconds: 2 * 1_000_000_000) // 1秒 = 1,000,000,000纳秒
+                                    buttonText = "立即登录"
+                                    buttonColor = Color.green
+                                }
+                            }
+                        }) {
+                            Text(buttonText)
+                                .foregroundColor(.white) // 文本颜色
+                                .font(.headline) // 字体大小和样式
+                        }
+                        .frame(width: 114)
+                        .padding() // 内边距
+                        .background(buttonColor) // 背景颜色
+                        .cornerRadius(10) // 圆角
+                    }
+                    .padding() // 其他视图的外边距
                     
-                    // 更新全局的账户数据
-                    AccountDataManager.shared.saveAccountData(loggedInAccountData)
-
-                    
-                    startLogin = false
-                    isLogin = true
-                    
-                }) {
-                    Text("立即登录")
-                        .foregroundColor(.white) // 文本颜色
-                        .font(.headline) // 字体大小和样式
-                }                .frame(width: 114)
-                    .padding() // 内边距
-                    .background(Color.green) // 背景颜色
-                    .cornerRadius(10) // 圆角
+                }.navigationTitle("账户管理")
             }
-            
-            
+        }
+    }
+}
+
+// 注册账户View
+struct RegisterAccount: View {
+    
+    // 用于存储输入的用户名、密码和确认密码
+    @State private var username = ""
+    @State private var password = ""
+    @State private var confirmPassword = ""
+    
+    @State private var buttonText = "立即注册"
+    @State private var buttonColor = Color.blue
+    
+    var registerViewModel = RegisterViewModel() // 你可能需要根据需要修改这里
+    
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 20) {
+                    Text("创建新账户 😊")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .padding()
+                    
+                    // 用户名输入框
+                    HStack {
+                        Image(systemName: "person")
+                            .padding()
+                            .scaleEffect(1.8)
+                        
+                        TextField("请输入用户名", text: $username)
+                            .padding()
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(10)
+                    }
+                    
+                    // 密码输入框
+                    HStack {
+                        Image(systemName: "lock")
+                            .padding()
+                            .scaleEffect(1.8)
+                        
+                        SecureField("请输入密码", text: $password)
+                            .padding()
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(10)
+                    }
+                    
+                    // 确认密码输入框
+                    HStack {
+                        Image(systemName: "lock")
+                            .padding()
+                            .scaleEffect(1.8)
+                        
+                        SecureField("确认密码", text: $confirmPassword)
+                            .padding()
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(10)
+                    }
+                    
+                    // 注册按钮
+                    Button(action: {
+                        Task {
+                            do {
+                                // 更新按钮状态为“正在注册”
+                                buttonText = "正在注册"
+                                buttonColor = Color.gray
+                                
+                                // 调用异步注册函数
+                                try await registerViewModel.register(username: username, password: password, confirmPassword: confirmPassword)
+                                
+                                // 根据注册结果执行相应操作
+                                if registerViewModel.registerResult {
+                                    print("注册成功")
+                                    // 在这里可以进行导航、显示成功提示等操作
+                                    buttonText = "注册成功"
+                                    buttonColor = Color.blue
+                                    
+                                    // 这里可以根据注册后的需求执行其他操作
+                                    try await Task.sleep(nanoseconds: 2 * 1_000_000_000) // 1秒 = 1,000,000,000纳秒
+                                    buttonText = "立即注册"
+                                    buttonColor = Color.green
+                                } else {
+                                    print("注册失败")
+                                    // 在这里可以显示失败提示等操作
+                                    buttonText = registerViewModel.registerMessage
+                                    buttonColor = Color.red
+                                    try await Task.sleep(nanoseconds: 2 * 1_000_000_000) // 1秒 = 1,000,000,000纳秒
+                                    buttonText = "立即注册"
+                                    buttonColor = Color.green
+                                }
+                            } catch {
+                                // 处理注册错误
+                                print("注册出错: \(error)")
+                                // 在这里可以显示错误提示等操作
+                                buttonText = "注册出错"
+                                buttonColor = Color.red
+                                try await Task.sleep(nanoseconds: 2 * 1_000_000_000) // 1秒 = 1,000,000,000纳秒
+                                buttonText = "立即注册"
+                                buttonColor = Color.green
+                            }
+                        }
+                    }) {
+                        Text(buttonText)
+                            .foregroundColor(.white)
+                            .font(.headline)
+                    }
+                    .padding()
+                    .background(buttonColor)
+                    .cornerRadius(10)
+                }
+                .padding()
+            }
+            .navigationTitle("注册账户")
         }
     }
 }
 
 
 
-//卡片颜色和深度信息
-struct AccountCardData {
-    //圆角半径
-    var cornerRadius: CGFloat = 15
-    //卡片间距
-    var cardSpacing: CGFloat = -16
-    //卡片高度
-    var cardHeight: CGFloat = 100
-    //卡片颜色（深色）
-    var cardColorDark: Color = Color.blue
-    //卡片颜色（浅色）
-    var cardColorLight: Color = Color.orange
-    //卡片边框颜色（深色）
-    var cardBorderColorDark: Color = Color.yellow
-    //卡片边框颜色（浅色）
-    var cardBorderColorLight: Color = Color.white
-    //卡片阴影颜色（深色）
-    var cardShadowColorDark: Color = Color.cyan.opacity(0.4)
-    //卡片阴影颜色（浅色）
-    var cardShadowColorLight: Color = Color.black.opacity(0.4)
-    
-}
-
 #Preview {
     NavigationStack{
-        //LoginPage()
-        //AccountManagePage()
-        AccountManage()
+        AccountManage().navigationTitle("私厨空间")
     }
 }

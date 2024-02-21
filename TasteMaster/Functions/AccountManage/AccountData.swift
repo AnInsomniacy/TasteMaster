@@ -6,8 +6,32 @@
 //
 
 import Foundation
+import SwiftUI
 
 var baseURL = "http://192.168.3.203:8000"
+
+//卡片颜色和深度信息
+struct AccountCardData {
+    //圆角半径
+    var cornerRadius: CGFloat = 15
+    //卡片间距
+    var cardSpacing: CGFloat = -16
+    //卡片高度
+    var cardHeight: CGFloat = 100
+    //卡片颜色（深色）
+    var cardColorDark: Color = Color.blue
+    //卡片颜色（浅色）
+    var cardColorLight: Color = Color.orange
+    //卡片边框颜色（深色）
+    var cardBorderColorDark: Color = Color.yellow
+    //卡片边框颜色（浅色）
+    var cardBorderColorLight: Color = Color.white
+    //卡片阴影颜色（深色）
+    var cardShadowColorDark: Color = Color.cyan.opacity(0.4)
+    //卡片阴影颜色（浅色）
+    var cardShadowColorLight: Color = Color.black.opacity(0.4)
+    
+}
 
 // 帐户数据结构体，遵循 Identifiable 和 Codable 协议
 struct AccountData: Identifiable, Codable {
@@ -158,6 +182,104 @@ class LoginViewModel: ObservableObject {
             // 抛出错误，以便外部处理
             throw error
         }
+    }
+}
+
+// 注册响应模型
+struct RegisterResponse: Codable {
+    let result: String // Change the type to String
+
+    // 根据响应的result字段判断是否成功
+    var isSuccess: Bool {
+        return result.lowercased() == "注册成功"
+    }
+}
+
+// 注册视图模型
+class RegisterViewModel: ObservableObject {
+    // 发布注册结果的变量
+    @Published var registerResult: Bool = false
+    @Published var registerMessage: String = ""
+
+    // 修改注册函数为异步函数，并允许抛出错误
+    func register(username: String, password: String, confirmPassword: String) async throws {
+        // 构建注册接口的URL
+        guard let url = URL(string: baseURL + "/api/register/") else {
+            return
+        }
+
+        // 创建POST请求
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+
+        // 设置请求体参数
+        var bodyComponents = URLComponents()
+        bodyComponents.queryItems = [
+            URLQueryItem(name: "username", value: username),
+            URLQueryItem(name: "password", value: password),
+            URLQueryItem(name: "password_confirm", value: confirmPassword)
+        ]
+
+        if let bodyString = bodyComponents.query {
+            request.httpBody = bodyString.data(using: .utf8)
+        }
+
+        // 修改 register 函数中的处理
+        do {
+            // 构建注册接口的URL
+            guard let url = URL(string: baseURL + "/api/register/") else {
+                return
+            }
+
+            // 创建POST请求
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            
+            // 设置请求体参数
+            var bodyComponents = URLComponents()
+            bodyComponents.queryItems = [
+                URLQueryItem(name: "username", value: username),
+                URLQueryItem(name: "password", value: password),
+                URLQueryItem(name: "password_confirm", value: confirmPassword)
+            ]
+
+            if let bodyString = bodyComponents.query {
+                request.httpBody = bodyString.data(using: .utf8)
+            }
+
+            // 设置超时时间（以秒为单位）
+            request.timeoutInterval = 5 // 设置为适当的值
+
+            // 发起网络请求，并等待异步任务完成
+            let (data, _) = try await URLSession.shared.data(for: request)
+
+            // 解码JSON响应
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(RegisterResponse.self, from: data)
+
+            // 判断注册是否成功
+            if result.isSuccess {
+                // 在主线程更新注册结果
+                DispatchQueue.main.async {
+                    self.registerResult = true
+                }
+            } else {
+                // 注册失败，可以在这里进行相应的处理
+                        
+                // 在主线程清空注册结果
+                DispatchQueue.main.async {
+                    self.registerResult = false
+                    self.registerMessage = result.result
+                }
+            }
+        } catch {
+            // 抛出错误，以便外部处理
+            throw error
+        }
+
+        
     }
 }
 

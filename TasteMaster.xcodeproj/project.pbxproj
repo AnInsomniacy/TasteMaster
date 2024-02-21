@@ -192,6 +192,7 @@
 		B3BEDF3C2B8250440036FCAA /* AccountManage */ = {
 			isa = PBXGroup;
 			children = (
+				B3BEDF3F2B8257080036FCAA /* AccountData.swift */,
 				B3BEDF3D2B8250980036FCAA /* AccountManage.swift */,
 				B32CF65A2B8426E7009DB061 /* DetailPage.swift */,
 			);
@@ -276,7 +277,6 @@
 				B3F8A74C2AD8E8BB00D129D3 /* TasteMasterApp.swift */,
 				B3F8A74E2AD8E8BB00D129D3 /* ContentView.swift */,
 				B3F8A7772AD8E8DB00D129D3 /* CardModel.swift */,
-				B3BEDF3F2B8257080036FCAA /* AccountData.swift */,
 				B3BF7A432AD92E6C00DE56C9 /* CardData.swift */,
 				B378CA112AE944A600355FD6 /* CookBookData.swift */,
 				B337D7F42ADA44B2008B5F8F /* CardReader.swift */,
