@@ -34,7 +34,7 @@ struct AccountManage: View{
                             if let avatarURLString = AccountDataManager.shared.currentAccountData?.avatar_url,
                                let avatarURL = URL(string: avatarURLString) {
                                 URLImage(avatarURL) {
-                                    // Placeholder or other view if the image is not available
+                                    // 如果图像不可用，则占位符或其他视图
                                     Image(systemName: "photo")
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
