@@ -16,6 +16,11 @@ struct AccountManage: View{
     @State var startLogin: Bool = false // 开始登录
     @State var isLogin: Bool = false // 是否登录
     
+    //登录和注销按钮颜色
+    @State var loginButtonColor: Color = .green
+    
+
+    
     let cardData = AccountCardData()//卡片规格信息
     
     var body: some View {
@@ -96,7 +101,7 @@ struct AccountManage: View{
                 HStack(spacing: -16){
                     
                     // 我的关注
-                    NavigationLink(destination: MyFollowers()) {
+                    NavigationLink(destination: MyFollowers().navigationBarTitle("关注列表")) {
                         RoundedRectangle(cornerRadius: cardData.cornerRadius) // 设置圆角半径
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(
@@ -123,7 +128,7 @@ struct AccountManage: View{
                     
                     
                     //我的粉丝
-                    NavigationLink(destination: MyFans()) {
+                    NavigationLink(destination: MyFans().navigationBarTitle("粉丝列表")) {
                         RoundedRectangle(cornerRadius: cardData.cornerRadius) // 设置圆角半径
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(
@@ -149,7 +154,7 @@ struct AccountManage: View{
                 
                 HStack(spacing: -16){
                     //我的文章
-                    NavigationLink(destination: MyArticles()) {
+                    NavigationLink(destination: MyArticles().navigationBarTitle("我的文章")) {
                         RoundedRectangle(cornerRadius: cardData.cornerRadius) // 设置圆角半径
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(
@@ -173,7 +178,7 @@ struct AccountManage: View{
                     }
                     
                     //个人信息
-                    NavigationLink(destination: MyInfo()) {
+                    NavigationLink(destination: MyInfo().navigationBarTitle("个人信息")) {
                         RoundedRectangle(cornerRadius: cardData.cornerRadius) // 设置圆角半径
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(
@@ -205,14 +210,14 @@ struct AccountManage: View{
                     }
                 }) {
                     RoundedRectangle(cornerRadius: cardData.cornerRadius) // 设置圆角半径
-                        .foregroundColor(colorScheme == .dark ? .pink : .pink) // 根据配色方案设置背景颜色
+                        .foregroundColor(loginButtonColor) // 根据配色方案设置背景颜色
                         .overlay(
                             HStack {
                                 if(isLogin == false){
-                                    Text("立即登录  ->").foregroundColor(Color.primary)
+                                    Text("立即登录").foregroundColor(Color.primary)
                                 }
                                 else{
-                                    Text("退出登录  ->").foregroundColor(Color.primary)
+                                    Text("退出登录").foregroundColor(Color.primary)
                                 }
                             }
                         )
@@ -228,6 +233,10 @@ struct AccountManage: View{
                         .sheet(isPresented: $startLogin) {
                             LoginPage(startLogin: $startLogin,isLogin: $isLogin)
                         }
+                }            
+                .onChange(of: isLogin) { newValue in
+                    // Change button color based on login state
+                    self.loginButtonColor = newValue ? .pink : .green
                 }
                 
             }
@@ -324,7 +333,7 @@ struct LoginPage: View{
                                         print("登录成功，访问令牌：\(loginViewModel.accessToken ?? "")")
                                         // 在这里可以进行导航、显示成功提示等操作
                                         buttonText = "登录成功"
-                                        buttonColor = Color.blue
+                                        buttonColor = Color.green
                                         
                                         //使用access token获取详细信息
                                         // 调用获取用户信息函数

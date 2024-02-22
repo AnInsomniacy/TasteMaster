@@ -38,7 +38,7 @@ struct ContentView: View {
             
             //味评共鉴
             NavigationStack {
-                OnlineReview()
+                CloudSpace()
                     .navigationTitle("味评共鉴")
             }.tabItem {
                 Image(systemName: "cloud")

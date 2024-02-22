@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct OnlineReview: View{
+struct CloudSpace: View{
     var body: some View{
         ScrollView{
             //加粗字体
@@ -19,6 +19,6 @@ struct OnlineReview: View{
 
 #Preview {
     NavigationStack{
-        OnlineReview().navigationTitle("味评共鉴")
+        CloudSpace().navigationTitle("味评共鉴")
     }
 }
