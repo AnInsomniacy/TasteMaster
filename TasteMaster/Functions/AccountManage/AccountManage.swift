@@ -15,10 +15,15 @@ struct AccountManage: View{
     
     @State var startLogin: Bool = false // 开始登录
     @State var isLogin: Bool = false // 是否登录
+    @State var followerCount: Int = 0 // 关注数
+    @State var fansCount: Int? // 粉丝数
     
     //登录和注销按钮颜色
     @State var loginButtonColor: Color = .green
     
+    @State var user_id: Int = 0//用户id
+    
+    @ObservedObject var accountDataManager = AccountDataManager.shared
 
     
     let cardData = AccountCardData()//卡片规格信息
@@ -101,16 +106,13 @@ struct AccountManage: View{
                 HStack(spacing: -16){
                     
                     // 我的关注
-                    NavigationLink(destination: MyFollowers().navigationBarTitle("关注列表")) {
+                    NavigationLink(destination: MyFollowers(user_id: String(user_id)).navigationBarTitle("关注列表")) {
                         RoundedRectangle(cornerRadius: cardData.cornerRadius) // 设置圆角半径
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(
                                 HStack {
-                                    if let followerCount = AccountDataManager.shared.currentAccountData?.follower_num {
-                                        Text("我的关注: \(followerCount) ->").foregroundColor(Color.primary)
-                                    } else {
-                                        Text("我的关注: ? ->").foregroundColor(Color.primary)
-                                    }
+                                    
+                                    Text("我的关注: \(accountDataManager.currentAccountData?.follower_num ?? 0) ->").foregroundColor(Color.primary)
                                     
                                 }
                             )
@@ -133,11 +135,9 @@ struct AccountManage: View{
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(
                                 HStack {
-                                    if let fansCount = AccountDataManager.shared.currentAccountData?.fans_num {
-                                        Text("我的粉丝: \(fansCount) ->").foregroundColor(Color.primary)
-                                    } else {
-                                        Text("我的粉丝: ? ->").foregroundColor(Color.primary)
-                                    }
+                                    
+                                    Text("我的粉丝: \(accountDataManager.currentAccountData?.fans_num ?? 0) ->").foregroundColor(Color.primary)
+                                    
                                 }
                             )
                             .padding()
@@ -159,11 +159,9 @@ struct AccountManage: View{
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(
                                 HStack {
-                                    if let articleCount = AccountDataManager.shared.currentAccountData?.article_num {
-                                        Text("我的文章: \(articleCount) ->").foregroundColor(Color.primary)
-                                    } else {
-                                        Text("我的文章: ? ->").foregroundColor(Color.primary)
-                                    }
+                                    
+                                    Text("我的文章: \(accountDataManager.currentAccountData?.article_num ?? 0) ->").foregroundColor(Color.primary)
+                                    
                                 }
                             )
                             .padding()
@@ -239,10 +237,35 @@ struct AccountManage: View{
                     self.loginButtonColor = newValue ? .pink : .green
                 }
                 
+                Button("debug"){
+                    //在视图出现时，将AccountDataManager.shared.currentAccountData?.is_login的值赋给isLogin
+                    Task{
+                        do{
+                            let result = try await AccountDataManager.shared.updateAccountData()
+                            print(result)
+                        }
+                    }
+                    self.isLogin = AccountDataManager.shared.currentAccountData?.is_login ?? false
+                    user_id = AccountDataManager.shared.currentAccountData?.user_id ?? 0
+                    followerCount = AccountDataManager.shared.currentAccountData?.follower_num ?? 0
+                }
+                
             }
         } .onAppear {
             //在视图出现时，将AccountDataManager.shared.currentAccountData?.is_login的值赋给isLogin
+            Task{
+                do{
+                    let result = try await AccountDataManager.shared.updateAccountData()
+                    if result {
+                        print("用户信息更新成功")
+                    } else {
+                        print("用户信息更新失败")
+                    }
+                }
+            }
             self.isLogin = AccountDataManager.shared.currentAccountData?.is_login ?? false
+            user_id = AccountDataManager.shared.currentAccountData?.user_id ?? 0
+            followerCount = AccountDataManager.shared.currentAccountData?.follower_num ?? 0
         }
     }
 }

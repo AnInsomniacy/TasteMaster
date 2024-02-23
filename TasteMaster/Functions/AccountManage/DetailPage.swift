@@ -18,6 +18,8 @@ struct MyFollowers: View {
     
     @StateObject private var followedUserInfoViewModel = FollowedUserInfoViewModel()
     
+    @State var user_id: String//要查询的用户ID
+    
     var body: some View {
         ScrollView{
             VStack(spacing: -16){
@@ -36,37 +38,19 @@ struct MyFollowers: View {
                         .padding()
                 }
                 
-            }
-            .onAppear {
+            }.onAppear {
                 // 在界面显示时自动获取关注用户列表信息
                 Task {
                     do {
-                        if let user_id = AccountDataManager.shared.currentAccountData?.user_id {
-                            try await followedUserInfoViewModel.getFollowedUserInfo(user_id: String(user_id))
-                        } else {
-                            print("当前账户数据的用户ID为空")
-                            // 在这里处理user_id为nil的情况，如果需要的话
-                        }
+                        
+                        try await followedUserInfoViewModel.getFollowedUserInfo(user_id: user_id)
+                        
                     } catch {
                         print("获取关注用户列表发生错误: \(error)")
                     }
                 }
                 
             }
-            
-            //            .onAppear {
-            //                // 在界面显示时自动获取关注用户列表信息
-            //                Task {
-            //                    do {
-            //
-            //                        try await followedUserInfoViewModel.getFollowedUserInfo(user_id: String(2))
-            //
-            //                    } catch {
-            //                        print("获取关注用户列表发生错误: \(error)")
-            //                    }
-            //                }
-            //
-            //            }
             
             
             
@@ -166,6 +150,11 @@ struct UserMainPage: View {
     @StateObject private var basicUserInfoViewModel = BasicUserInfoViewModel()
     
     @State var user_id: String//要查询的用户ID
+    @State var followButtonText = "立即关注"
+    @State var followButtonColor = Color.green
+    @State var isFollowed = false//是否已关注
+    
+    @ObservedObject var accountDataManager = AccountDataManager.shared
     
     var body: some View {
         ScrollView{
@@ -245,16 +234,13 @@ struct UserMainPage: View {
                 HStack(spacing: -16){
                     
                     // 我的关注
-                    NavigationLink(destination: MyFollowers().navigationBarTitle("关注列表")) {
+                    NavigationLink(destination: MyFollowers(user_id: user_id).navigationBarTitle("关注列表")) {
                         RoundedRectangle(cornerRadius: cardData.cornerRadius) // 设置圆角半径
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(
                                 HStack {
-                                    if let followerCount = basicUserInfoViewModel.BasicUserInfo?.followerNum {
-                                        Text("TA 的关注: \(followerCount) ->").foregroundColor(Color.primary)
-                                    } else {
-                                        Text("TA 的关注: ? ->").foregroundColor(Color.primary)
-                                    }
+                                    
+                                    Text("TA 的关注: \(accountDataManager.currentAccountData?.article_num ?? 0) ->").foregroundColor(Color.primary)
                                     
                                 }
                             )
@@ -277,11 +263,9 @@ struct UserMainPage: View {
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(
                                 HStack {
-                                    if let fansCount = basicUserInfoViewModel.BasicUserInfo?.fanNum {
-                                        Text("TA 的粉丝: \(fansCount) ->").foregroundColor(Color.primary)
-                                    } else {
-                                        Text("TA 的粉丝: ? ->").foregroundColor(Color.primary)
-                                    }
+                                    
+                                    Text("TA 的粉丝: \(accountDataManager.currentAccountData?.fans_num ?? 0) ->").foregroundColor(Color.primary)
+                                    
                                 }
                             )
                             .padding()
@@ -303,11 +287,9 @@ struct UserMainPage: View {
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(
                                 HStack {
-                                    if let articleCount = basicUserInfoViewModel.BasicUserInfo?.articleNum {
-                                        Text("TA 的文章: \(articleCount) ->").foregroundColor(Color.primary)
-                                    } else {
-                                        Text("TA 的文章: ? ->").foregroundColor(Color.primary)
-                                    }
+                                    
+                                    Text("我的文章: \(accountDataManager.currentAccountData?.article_num ?? 0) ->").foregroundColor(Color.primary)
+                                    
                                 }
                             )
                             .padding()
@@ -321,13 +303,57 @@ struct UserMainPage: View {
                             )
                     }
                     
-                    //个人信息
-                    NavigationLink(destination: MyInfo().navigationBarTitle("个人信息")) {
+                    //关注判定按钮
+                    Button(action: {
+                        // 在支持并发性的上下文中调用异步函数
+                        print("关注按钮被点击了")
+                        
+                        //判定关注状态，执行立即关注或取消关注
+                        if isFollowed {
+                            Task{
+                                do{
+                                    
+                                    let result = try await unfollowUser(unfollow_user_id: user_id, access_token: AccountDataManager.shared.currentAccountData?.access_token ?? "")
+                                    
+                                    isFollowed.toggle()
+                                    followButtonText = isFollowed ? "取消关注" : "立即关注"
+                                    followButtonColor = isFollowed ? .red : .green
+                                    
+                                    print(result)
+                                    
+                                }catch{
+                                    print("关注失败")
+                                }
+                            }
+                        } else{
+                            
+                            Task{
+                                do{
+                                    
+                                    let result = try await followUser(follow_user_id: user_id, access_token: AccountDataManager.shared.currentAccountData?.access_token ?? "")
+                                    
+                                    isFollowed.toggle()
+                                    followButtonText = isFollowed ? "取消关注" : "立即关注"
+                                    
+                                    followButtonColor = isFollowed ? .red : .green
+                                    
+                                    print(result)
+                                    
+                                }catch{
+                                    print("取消关注失败")
+                                }
+                            }
+                            
+                        }
+                        
+                        
+                    }){
                         RoundedRectangle(cornerRadius: cardData.cornerRadius) // 设置圆角半径
-                            .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
+                            .foregroundColor(followButtonColor) // 根据配色方案设置背景颜色
                             .overlay(
                                 HStack {
-                                    Text("个人信息  ->").foregroundColor(Color.primary)
+                                    Text(followButtonText).foregroundColor(Color.primary)
+                                    
                                 }
                             )
                             .padding()
@@ -340,6 +366,7 @@ struct UserMainPage: View {
                                 
                             )
                     }
+                    
                 }
                 
             }.onAppear{
@@ -348,15 +375,26 @@ struct UserMainPage: View {
                     do{
                         try await basicUserInfoViewModel.getBasicUserInfo(user_id: user_id)
                         
-                        if let result = basicUserInfoViewModel.BasicUserInfo{
-                            //循环输出数组
-                            print(result)
+                        if let accessToken = AccountDataManager.shared.currentAccountData?.access_token {
                             
+                            do {
+                                isFollowed = try await getFollowStatus(user_id: String(user_id), access_token: accessToken)
+                                // 在这里处理关注状态
+                                followButtonText = isFollowed ? "取消关注" : "立即关注"
+                                followButtonColor = isFollowed ? .red : .green
+                                print("关注状态: \(isFollowed)")
+                            } catch {
+                                // 处理错误
+                                print("发生错误: \(error)")
+                            }
+                            
+                            let result = try await AccountDataManager.shared.updateAccountData()
+                            if result {
+                                print("用户信息更新成功")
+                            } else {
+                                print("用户信息更新失败")
+                            }
                         }
-                        
-                    }catch{
-                        print(error)
-                        
                     }
                 }
             }
@@ -367,7 +405,7 @@ struct UserMainPage: View {
 
 #Preview {
     NavigationStack{
-        MyFollowers().navigationTitle("我的关注")
+        MyFollowers(user_id: "1").navigationTitle("我的关注")
         //MyFans().navigationTitle("我的粉丝")
         //UserMainPage(user_id:"1")
     }

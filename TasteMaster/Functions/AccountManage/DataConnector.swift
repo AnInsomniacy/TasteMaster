@@ -15,6 +15,10 @@ struct UserBriefInfo: View{
     @State var avatarUrl_input:String?
     @State var currentUsername_input:String
     @State var user_id:String
+    @State var followButtonText:String = "立即关注"
+    @State var followButtonColor:Color = .indigo
+    
+    @State var isFollowed:Bool = false
     
     @Environment(\.colorScheme) var colorScheme // 获取当前的配色方案（明亮或黑暗）
     
@@ -93,16 +97,53 @@ struct UserBriefInfo: View{
                                     .cornerRadius(10)
                             }.padding()
                             
-                            //取消关注按钮
+                            //关注判定按钮
                             Button(action: {
-                                print("取消关注")
+                                
+                                if isFollowed {
+                                    Task{
+                                        do{
+                                            
+                                            let result = try await unfollowUser(unfollow_user_id: user_id, access_token: AccountDataManager.shared.currentAccountData?.access_token ?? "")
+                                            
+                                            isFollowed.toggle()
+                                            followButtonText = isFollowed ? "取消关注" : "立即关注"
+                                            followButtonColor = isFollowed ? .red : .indigo
+                                            
+                                            print(result)
+                                            
+                                        }catch{
+                                            print("关注失败")
+                                        }
+                                    }
+                                } else {
+                                    
+                                    Task{
+                                        do{
+                                            
+                                            let result = try await followUser(follow_user_id: user_id, access_token: AccountDataManager.shared.currentAccountData?.access_token ?? "")
+                                            
+                                            isFollowed.toggle()
+                                            followButtonText = isFollowed ? "取消关注" : "立即关注"
+                                            followButtonColor = isFollowed ? .red : .indigo
+                                            
+                                            print(result)
+                                            
+                                        }catch{
+                                            print("取消关注失败")
+                                        }
+                                    }
+                                    
+                                }                                
+                                
+                                
                             }) {
-                                Text("取消关注")
+                                Text(followButtonText)
                                     .font(.title3)
                                     .fontWeight(.bold)
                                     .foregroundColor(.white)
                                     .padding()
-                                    .background(Color.red)
+                                    .background(followButtonColor)
                                     .cornerRadius(10)
                             }.padding()
                             
@@ -118,7 +159,19 @@ struct UserBriefInfo: View{
                 RoundedRectangle(cornerRadius: 15)
                     .stroke(colorScheme == .dark ? cardData.cardBorderColorDark : cardData.cardBorderColorLight, lineWidth: 2)
                     .padding()
-            )
+            ).onAppear{
+                //界面一出现就判定是否关注
+                Task{
+                    do{
+                        isFollowed = try await getFollowStatus(user_id: user_id, access_token: AccountDataManager.shared.currentAccountData?.access_token ?? "")
+                        
+                        followButtonText = isFollowed ? "取消关注" : "立即关注"
+                        
+                        followButtonColor = isFollowed ? .red : .indigo
+                        
+                    }
+                }
+            }
     }
 }
 
@@ -312,4 +365,175 @@ class BasicUserInfoViewModel: ObservableObject {
             throw error
         }
     }
+}
+
+//获取关注状态
+func getFollowStatus(user_id: String, access_token: String) async throws -> Bool {
+    
+    struct FollowStatusResponse: Codable {
+        let result: String?
+        let isFollowed: Bool?
+        let reason: String?
+        
+        private enum CodingKeys: String, CodingKey {
+            case result
+            case isFollowed = "isfollowed"
+            case reason
+        }
+    }
+    
+    // 构建获取关注状态接口的URL
+    guard let url = URL(string: baseURL + "/api/is_followed/") else {
+        return false
+    }
+    
+    // 创建POST请求
+    var request = URLRequest(url: url)
+    request.httpMethod = "POST"
+    request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+    
+    // 设置请求体参数
+    var bodyComponents = URLComponents()
+    bodyComponents.queryItems = [
+        URLQueryItem(name: "user_id", value: user_id),
+        URLQueryItem(name: "access_token", value: access_token)
+    ]
+    
+    if let bodyString = bodyComponents.query {
+        request.httpBody = bodyString.data(using: .utf8)
+    }
+    
+    do {
+        // 发起网络请求，并等待异步任务完成
+        let (data, _) = try await URLSession.shared.data(for: request)
+        
+        // 解码JSON响应
+        let decoder = JSONDecoder()
+        let result = try decoder.decode(FollowStatusResponse.self, from: data)
+        
+        // 返回关注状态
+        //如果is_followed存在
+        if let isFollowed = result.isFollowed {
+            return isFollowed
+        } else {
+            return false
+        }
+        
+    } catch {
+        // 抛出错误，以便外部处理
+        throw error
+    }
+}
+
+//关注用户
+func followUser(follow_user_id: String, access_token: String) async throws ->Bool {
+    
+    struct FollowUserResponse: Codable {
+        let result: String
+        let reason: String?
+        let current_user: String?//发起关注操作的用户id
+        let follow_user: Int?//被关注的用户id
+        
+    }
+    
+    // 构建关注用户接口的URL
+    guard let url = URL(string: baseURL + "/api/follow_user/") else {
+        return false
+    }
+    
+    // 创建POST请求
+    var request = URLRequest(url: url)
+    request.httpMethod = "POST"
+    request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+    
+    // 设置请求体参数
+    var bodyComponents = URLComponents()
+    bodyComponents.queryItems = [
+        URLQueryItem(name: "follow_user_id", value: follow_user_id),
+        URLQueryItem(name: "access_token", value: access_token),
+        ]
+    
+    //设置请求体
+    if let bodyString = bodyComponents.query {
+        request.httpBody = bodyString.data(using: .utf8)
+    }
+    
+    do {
+        // 发起网络请求，并等待异步任务完成
+        let (data, _) = try await URLSession.shared.data(for: request)
+        
+        // 解码JSON响应
+        let decoder = JSONDecoder()
+        let result = try decoder.decode(FollowUserResponse.self, from: data)
+        
+        
+        // 如果 current_user存在,返回true
+        if result.current_user != nil {
+            return true
+        } else {
+            return false
+        }
+        
+        
+    } catch {
+        // 抛出错误，以便外部处理
+        throw error
+    }
+    
+}
+
+
+//取消关注借口
+func unfollowUser(unfollow_user_id: String, access_token: String) async throws ->Bool {
+    
+    struct UnfollowUserResponse: Codable {
+        let result: String
+        let reason: String?
+        let current_user: String?//发起取消关注操作的用户id
+        let unfollow_user: Int?//被取消关注的用户id
+    }
+    
+    // 构建取消关注用户接口的URL
+    guard let url = URL(string: baseURL + "/api/unfollow_user/") else {
+        return false
+    }
+    
+    // 创建POST请求
+    var request = URLRequest(url: url)
+    request.httpMethod = "POST"
+    request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+    
+    // 设置请求体参数
+    var bodyComponents = URLComponents()
+    bodyComponents.queryItems = [
+        URLQueryItem(name: "unfollow_user_id", value: unfollow_user_id),
+        URLQueryItem(name: "access_token", value: access_token),
+        ]
+    
+    //设置请求体
+    if let bodyString = bodyComponents.query {
+        request.httpBody = bodyString.data(using: .utf8)
+    }
+    
+    do {
+        // 发起网络请求，并等待异步任务完成
+        let (data, _) = try await URLSession.shared.data(for: request)
+        
+        // 解码JSON响应
+        let decoder = JSONDecoder()
+        let result = try decoder.decode(UnfollowUserResponse.self, from: data)
+        
+        // 如果 current_user存在,返回true
+        if result.current_user != nil {
+            return true
+        } else {
+            return false
+        }
+        
+    } catch {
+        // 抛出错误，以便外部处理
+        throw error
+    }
+    
+    
 }

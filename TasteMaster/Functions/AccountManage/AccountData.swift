@@ -98,6 +98,7 @@ class AccountDataManager: ObservableObject { // 继承 ObservableObject 协议
         if var accountData = currentAccountData {
             accountData[keyPath: keyPath] = value
             saveAccountData(accountData)
+            
         }
     }
     
@@ -107,6 +108,59 @@ class AccountDataManager: ObservableObject { // 继承 ObservableObject 协议
         currentAccountData = nil
         NotificationCenter.default.post(name: Notification.Name("AccountDataDeleted"), object: nil)
     }
+    
+    //更新用户数据
+    func updateAccountData() async throws -> Bool{
+        
+        let currentUserInfoViewModel = CurrentUserInfoViewModel()
+        
+        print(AccountDataManager.shared.currentAccountData?.access_token ?? "无令牌")
+
+        do {
+            try await currentUserInfoViewModel.getCurrentUserInfo(access_token: AccountDataManager.shared.currentAccountData?.access_token ?? "")
+            
+            print("获取成功")
+            // 检查是否成功获取用户信息
+            if let userInfo = currentUserInfoViewModel.userInfo {
+                // 输出用户信息
+                print("用户ID: \(userInfo.user_id)")
+                print("用户名: \(userInfo.username)")
+                print("头像URL: \(userInfo.avatarUrl)")
+                print("个人简介: \(userInfo.selfIntroduction)")
+                print("粉丝数: \(userInfo.fanNum)")
+                print("关注数: \(userInfo.followerNum)")
+                print("文章数: \(userInfo.articleNum)")
+                
+                DispatchQueue.main.async {
+                    // 保存状态，持久化存储
+                    // 用户ID
+                    AccountDataManager.shared.updateAccountDataField(\.user_id, value: userInfo.user_id)
+                    // 头像URL
+                    AccountDataManager.shared.updateAccountDataField(\.avatar_url, value: userInfo.avatarUrl)
+                    // 个人简介
+                    AccountDataManager.shared.updateAccountDataField(\.self_introduction, value: userInfo.selfIntroduction)
+                    // 粉丝数
+                    AccountDataManager.shared.updateAccountDataField(\.fans_num, value: userInfo.fanNum)
+                    // 关注数
+                    AccountDataManager.shared.updateAccountDataField(\.follower_num, value: userInfo.followerNum)
+                    // 文章数
+                    AccountDataManager.shared.updateAccountDataField(\.article_num, value: userInfo.articleNum)
+                    // 登录状态
+                    AccountDataManager.shared.updateAccountDataField(\.is_login, value: true)
+                    
+                }
+                
+                return true
+            } else {
+                print("获取用户信息失败")
+                return false
+            }
+        } catch {
+            print("获取用户信息时发生错误: \(error)")
+        }
+        return false
+    }
+    
 }
 
 // 登录响应模型
@@ -329,9 +383,12 @@ class CurrentUserInfoViewModel: ObservableObject {
             // 解码JSON响应
             let decoder = JSONDecoder()
             let result = try decoder.decode(CurrentUserInfoResponse.self, from: data)
+            
+            self.userInfo = result
 
             // 在主线程更新当前用户信息
             DispatchQueue.main.async {
+                print("已执行获取用户信息")
                 self.userInfo = result
             }
         } catch {
