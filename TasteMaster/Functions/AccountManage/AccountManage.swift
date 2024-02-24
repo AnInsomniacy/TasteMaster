@@ -130,7 +130,7 @@ struct AccountManage: View{
                     
                     
                     //我的粉丝
-                    NavigationLink(destination: MyFans().navigationBarTitle("粉丝列表")) {
+                    NavigationLink(destination: MyFans(user_id: String(user_id)).navigationBarTitle("粉丝列表")) {
                         RoundedRectangle(cornerRadius: cardData.cornerRadius) // 设置圆角半径
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(
@@ -235,19 +235,6 @@ struct AccountManage: View{
                 .onChange(of: isLogin) { newValue in
                     // Change button color based on login state
                     self.loginButtonColor = newValue ? .pink : .green
-                }
-                
-                Button("debug"){
-                    //在视图出现时，将AccountDataManager.shared.currentAccountData?.is_login的值赋给isLogin
-                    Task{
-                        do{
-                            let result = try await AccountDataManager.shared.updateAccountData()
-                            print(result)
-                        }
-                    }
-                    self.isLogin = AccountDataManager.shared.currentAccountData?.is_login ?? false
-                    user_id = AccountDataManager.shared.currentAccountData?.user_id ?? 0
-                    followerCount = AccountDataManager.shared.currentAccountData?.follower_num ?? 0
                 }
                 
             }

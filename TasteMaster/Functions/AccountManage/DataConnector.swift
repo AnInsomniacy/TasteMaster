@@ -310,6 +310,80 @@ class FanUserInfoViewModel: ObservableObject {
     }
 }
 
+//获取用户文章列表
+// 定义与JSON响应匹配的Swift结构体
+struct ArticleResponse: Codable {
+    var result: String
+    var userID: Int?
+    var username: String?
+    var articleCount: Int?
+    var articleList: [ArticleInfo]?
+    
+    enum CodingKeys: String, CodingKey {
+        case result
+        case userID = "user_id"
+        case username
+        case articleCount = "article_count"
+        case articleList = "article_list"
+    }
+}
+
+struct ArticleInfo: Codable {
+    var article_id: Int
+    var article_title: String
+    var image_url: String
+    var article_content: String
+    var article_author: String
+    var create_time: String
+    var update_time: String
+}
+
+// 获取用户文章列表视图模型
+class ArticleViewModel: ObservableObject {
+    // 发布用户文章列表的变量
+    @Published var ArticleData: ArticleResponse?
+    
+    // 修改获取用户文章列表函数为异步函数，并允许抛出错误
+    func getArticleList(user_id: String) async throws {
+        // 构建获取用户文章列表接口的URL
+        guard let url = URL(string: baseURL + "/api/show_articles/") else {
+            return
+        }
+        
+        // 创建POST请求
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        
+        // 设置请求体参数
+        var bodyComponents = URLComponents()
+        bodyComponents.queryItems = [
+            URLQueryItem(name: "user_id", value: user_id)
+        ]
+        
+        if let bodyString = bodyComponents.query {
+            request.httpBody = bodyString.data(using: .utf8)
+        }
+        
+        do {
+            // 发起网络请求，并等待异步任务完成
+            let (data, _) = try await URLSession.shared.data(for: request)
+            
+            // 解码JSON响应
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(ArticleResponse.self, from: data)
+            
+            // 在主线程更新用户文章列表信息
+            DispatchQueue.main.async {
+                self.ArticleData = result
+            }
+        } catch {
+            // 抛出错误，以便外部处理
+            throw error
+        }
+    }
+}
+
 //获取返回信息用户模型
 struct BasicUserInfoResponse: Codable {
     let result: String
@@ -483,7 +557,7 @@ func followUser(follow_user_id: String, access_token: String) async throws ->Boo
 }
 
 
-//取消关注借口
+//取消关注接口
 func unfollowUser(unfollow_user_id: String, access_token: String) async throws ->Bool {
     
     struct UnfollowUserResponse: Codable {

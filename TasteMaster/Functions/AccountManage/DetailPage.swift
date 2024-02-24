@@ -67,6 +67,8 @@ struct MyFans: View {
     
     @StateObject private var fanUserInfoViewModel = FanUserInfoViewModel()
     
+    @State var user_id: String//要查询的用户ID
+    
     var body: some View {
         ScrollView{
             VStack(spacing: -16){
@@ -85,51 +87,44 @@ struct MyFans: View {
                         .padding()
                 }
                 
-            }
+            }.onAppear {
+                            // 在界面显示时自动获取关注用户列表信息
+                            Task {
+                                do {
             
-            .onAppear {
-                // 在界面显示时自动获取关注用户列表信息
-                Task {
-                    do {
-                        if let user_id = AccountDataManager.shared.currentAccountData?.user_id {
-                            try await fanUserInfoViewModel.getFanUserInfo(user_id: String(user_id))
-                        } else {
-                            print("当前账户数据的用户ID为空")
-                            // 在这里处理user_id为nil的情况，如果需要的话
+                                    try await fanUserInfoViewModel.getFanUserInfo(user_id: user_id)
+            
+                                } catch {
+                                    print("获取粉丝用户列表发生错误: \(error)")
+                                }
+                            }
+            
                         }
-                    } catch {
-                        print("获取关注用户列表发生错误: \(error)")
-                    }
-                }
-                
-            }
-            
-            
-            
-            //            .onAppear {
-            //                // 在界面显示时自动获取关注用户列表信息
-            //                Task {
-            //                    do {
-            //
-            //                        try await fanUserInfoViewModel.getFanUserInfo(user_id: String(2))
-            //
-            //                    } catch {
-            //                        print("获取粉丝用户列表发生错误: \(error)")
-            //                    }
-            //                }
-            //
-            //            }
-            
-            
-            
+              
         }
     }
 }
 
 //我的文章
 struct MyArticles: View {
+    @ObservedObject var articleViewModel = ArticleViewModel()
+    
     var body: some View {
-        Text("我的文章")
+        Button("debug"){
+            Task{
+                do{
+                    try await articleViewModel.getArticleList(user_id: "2")
+                    if let articleList = articleViewModel.ArticleData?.articleList {
+                        for article in articleList {
+                            print(article.article_title)
+                            
+                        }
+                    }else{
+                        print("articleList is nil")
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -148,13 +143,13 @@ struct UserMainPage: View {
     let cardData = AccountCardData()//卡片规格信息
     
     @StateObject private var basicUserInfoViewModel = BasicUserInfoViewModel()
+    @ObservedObject var accountDataManager = AccountDataManager.shared
     
     @State var user_id: String//要查询的用户ID
     @State var followButtonText = "立即关注"
     @State var followButtonColor = Color.green
     @State var isFollowed = false//是否已关注
     
-    @ObservedObject var accountDataManager = AccountDataManager.shared
     
     var body: some View {
         ScrollView{
@@ -240,7 +235,7 @@ struct UserMainPage: View {
                             .overlay(
                                 HStack {
                                     
-                                    Text("TA 的关注: \(accountDataManager.currentAccountData?.article_num ?? 0) ->").foregroundColor(Color.primary)
+                                    Text("TA 的关注: \(basicUserInfoViewModel.BasicUserInfo?.followerNum ?? 0) ->").foregroundColor(Color.primary)
                                     
                                 }
                             )
@@ -258,13 +253,13 @@ struct UserMainPage: View {
                     
                     
                     //我的粉丝
-                    NavigationLink(destination: MyFans().navigationBarTitle("粉丝列表")) {
+                    NavigationLink(destination: MyFans(user_id: user_id).navigationBarTitle("粉丝列表")) {
                         RoundedRectangle(cornerRadius: cardData.cornerRadius) // 设置圆角半径
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(
                                 HStack {
                                     
-                                    Text("TA 的粉丝: \(accountDataManager.currentAccountData?.fans_num ?? 0) ->").foregroundColor(Color.primary)
+                                    Text("TA 的粉丝: \(basicUserInfoViewModel.BasicUserInfo?.fanNum ?? 0) ->").foregroundColor(Color.primary)
                                     
                                 }
                             )
@@ -288,7 +283,7 @@ struct UserMainPage: View {
                             .overlay(
                                 HStack {
                                     
-                                    Text("我的文章: \(accountDataManager.currentAccountData?.article_num ?? 0) ->").foregroundColor(Color.primary)
+                                    Text("TA 的文章: \(basicUserInfoViewModel.BasicUserInfo?.articleNum ?? 0) ->").foregroundColor(Color.primary)
                                     
                                 }
                             )
@@ -405,8 +400,9 @@ struct UserMainPage: View {
 
 #Preview {
     NavigationStack{
-        MyFollowers(user_id: "1").navigationTitle("我的关注")
+        //MyFollowers(user_id: "1").navigationTitle("我的关注")
         //MyFans().navigationTitle("我的粉丝")
+        MyArticles()
         //UserMainPage(user_id:"1")
     }
 }
