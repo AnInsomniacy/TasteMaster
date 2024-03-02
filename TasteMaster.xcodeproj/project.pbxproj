@@ -33,6 +33,10 @@
 		B377C6EE2ADA93170099AB83 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = B377C6ED2ADA93170099AB83 /* MarkdownUI */; };
 		B378CA122AE944A600355FD6 /* CookBookData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B378CA112AE944A600355FD6 /* CookBookData.swift */; };
 		B378CA142AE94A0000355FD6 /* Vegetarian.swift in Sources */ = {isa = PBXBuildFile; fileRef = B378CA132AE94A0000355FD6 /* Vegetarian.swift */; };
+		B399D6122B9353A1009F3D92 /* ArticleModification.swift in Sources */ = {isa = PBXBuildFile; fileRef = B399D6112B9353A1009F3D92 /* ArticleModification.swift */; };
+		B399D6142B9353EF009F3D92 /* ArticleCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B399D6132B9353EF009F3D92 /* ArticleCreation.swift */; };
+		B399D6162B935CB2009F3D92 /* ArticleManageAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B399D6152B935CB1009F3D92 /* ArticleManageAPI.swift */; };
+		B399D6192B935E01009F3D92 /* AccountInfoModify.swift in Sources */ = {isa = PBXBuildFile; fileRef = B399D6182B935E01009F3D92 /* AccountInfoModify.swift */; };
 		B39CF18D2AEE5FB600F988E9 /* AccessTokenFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39CF18C2AEE5FB600F988E9 /* AccessTokenFetcher.swift */; };
 		B39CF1902AEE63ED00F988E9 /* GPT_Handler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39CF18F2AEE63ED00F988E9 /* GPT_Handler.swift */; };
 		B3A4A7772B81E6B60045A9EB /* CloudSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A4A7762B81E6B60045A9EB /* CloudSpace.swift */; };
@@ -100,6 +104,10 @@
 		B3684F842B1C620600E1127F /* plant_recognization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = plant_recognization.swift; sourceTree = "<group>"; };
 		B378CA112AE944A600355FD6 /* CookBookData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookBookData.swift; sourceTree = "<group>"; };
 		B378CA132AE94A0000355FD6 /* Vegetarian.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vegetarian.swift; sourceTree = "<group>"; };
+		B399D6112B9353A1009F3D92 /* ArticleModification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleModification.swift; sourceTree = "<group>"; };
+		B399D6132B9353EF009F3D92 /* ArticleCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleCreation.swift; sourceTree = "<group>"; };
+		B399D6152B935CB1009F3D92 /* ArticleManageAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleManageAPI.swift; sourceTree = "<group>"; };
+		B399D6182B935E01009F3D92 /* AccountInfoModify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountInfoModify.swift; sourceTree = "<group>"; };
 		B39CF18C2AEE5FB600F988E9 /* AccessTokenFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenFetcher.swift; sourceTree = "<group>"; };
 		B39CF18F2AEE63ED00F988E9 /* GPT_Handler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPT_Handler.swift; sourceTree = "<group>"; };
 		B3A4A7762B81E6B60045A9EB /* CloudSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSpace.swift; sourceTree = "<group>"; };
@@ -165,6 +173,28 @@
 			path = CreativeTools;
 			sourceTree = "<group>";
 		};
+		B399D6102B93536E009F3D92 /* ArticleManage */ = {
+			isa = PBXGroup;
+			children = (
+				B399D6112B9353A1009F3D92 /* ArticleModification.swift */,
+				B399D6132B9353EF009F3D92 /* ArticleCreation.swift */,
+				B399D6152B935CB1009F3D92 /* ArticleManageAPI.swift */,
+			);
+			path = ArticleManage;
+			sourceTree = "<group>";
+		};
+		B399D6172B935DCC009F3D92 /* AccountData */ = {
+			isa = PBXGroup;
+			children = (
+				B3BEDF3F2B8257080036FCAA /* AccountData.swift */,
+				B3BEDF3D2B8250980036FCAA /* AccountManage.swift */,
+				B399D6182B935E01009F3D92 /* AccountInfoModify.swift */,
+				B32CF65A2B8426E7009DB061 /* DetailPage.swift */,
+				B35E67302B85C4EF00524780 /* DataConnector.swift */,
+			);
+			path = AccountData;
+			sourceTree = "<group>";
+		};
 		B39CF18B2AEE5F9400F988E9 /* AIAnalyst */ = {
 			isa = PBXGroup;
 			children = (
@@ -194,10 +224,8 @@
 		B3BEDF3C2B8250440036FCAA /* AccountManage */ = {
 			isa = PBXGroup;
 			children = (
-				B3BEDF3F2B8257080036FCAA /* AccountData.swift */,
-				B3BEDF3D2B8250980036FCAA /* AccountManage.swift */,
-				B32CF65A2B8426E7009DB061 /* DetailPage.swift */,
-				B35E67302B85C4EF00524780 /* DataConnector.swift */,
+				B399D6172B935DCC009F3D92 /* AccountData */,
+				B399D6102B93536E009F3D92 /* ArticleManage */,
 			);
 			path = AccountManage;
 			sourceTree = "<group>";
@@ -475,8 +503,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3BF7A442AD92E6C00DE56C9 /* CardData.swift in Sources */,
+				B399D6122B9353A1009F3D92 /* ArticleModification.swift in Sources */,
 				B302723F2AECA1E8007DA186 /* SemiDish.swift in Sources */,
 				B30BDA1F2AF0A34700D2985A /* ContributeCards.swift in Sources */,
+				B399D6162B935CB2009F3D92 /* ArticleManageAPI.swift in Sources */,
 				B3533DF22AEC9D6F00AA977C /* Meat.swift in Sources */,
 				B3BEDF3E2B8250980036FCAA /* AccountManage.swift in Sources */,
 				B3B264982AF0F35C0093BEFF /* ItemRecognizationUI.swift in Sources */,
@@ -487,6 +517,7 @@
 				B3F9C3B82AEF8EC5004B07C4 /* advanced_general.swift in Sources */,
 				B3F9C3BB2AEF96F2004B07C4 /* PhotosController.swift in Sources */,
 				B32CF65B2B8426E7009DB061 /* DetailPage.swift in Sources */,
+				B399D6192B935E01009F3D92 /* AccountInfoModify.swift in Sources */,
 				B302723D2AECA149007DA186 /* Staple.swift in Sources */,
 				B310F2872AE9011F00EA4C73 /* MyFavorite.swift in Sources */,
 				B3F8A74F2AD8E8BB00D129D3 /* ContentView.swift in Sources */,
@@ -500,6 +531,7 @@
 				B337D7F52ADA44B2008B5F8F /* CardReader.swift in Sources */,
 				B3684F852B1C620600E1127F /* plant_recognization.swift in Sources */,
 				B3A4A7772B81E6B60045A9EB /* CloudSpace.swift in Sources */,
+				B399D6142B9353EF009F3D92 /* ArticleCreation.swift in Sources */,
 				B3BEDF402B8257080036FCAA /* AccountData.swift in Sources */,
 				B3E79FFB2AD94EEF003E175C /* GlobalSearch.swift in Sources */,
 				B35E67312B85C4EF00524780 /* DataConnector.swift in Sources */,

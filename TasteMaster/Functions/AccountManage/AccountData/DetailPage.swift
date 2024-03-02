@@ -179,10 +179,77 @@ struct MyArticles: View {
     }
 }
 
-//资料修改
-struct MyInfo: View {
+//文章管理
+struct ArticleManagement: View {
+    
+    @ObservedObject var articleViewModel = ArticleViewModel()
+    @State var user_id: String//要查询的用户ID
+    
     var body: some View {
-        Text("资料修改")
+        
+        
+        ScrollView{
+            VStack(spacing: -16){
+                if let articleList = articleViewModel.ArticleData?.articleList {
+                    ForEach(articleList, id: \.article_id) { article in
+                        ArticleCardManagement(avatarUrl_input: article.image_url, author_name: article.article_author,article_title: article.article_title, article_id: article.article_id)
+                    }
+                } else {
+                    Text("获取文章列表失败")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundColor(.gray)
+                        .padding()
+                }
+            }.onAppear{
+                Task{
+                    do{
+                        try await articleViewModel.getArticleList(user_id: user_id)
+                        if let articleList = articleViewModel.ArticleData?.articleList {
+                            for article in articleList {
+                                print(article.article_title)
+                                print(article.article_author)
+                                print(article.article_id)
+                                print(article.create_time)
+                                print(article.update_time)
+                                print(article.image_url)
+                                print(" ")
+                                
+                            }
+                        }else{
+                            print("articleList is nil")
+                        }
+                    }
+                }
+            }
+        }
+        
+        
+        
+//        Button("debug"){
+//            Task{
+//                do{
+//                    try await articleViewModel.getArticleList(user_id: "2")
+//                    if let articleList = articleViewModel.ArticleData?.articleList {
+//                        for article in articleList {
+//                            print(article.article_title)
+//                            print(article.article_author)
+//                            print(article.article_content)
+//                            print(article.article_id)
+//                            print(article.create_time)
+//                            print(article.update_time)
+//                            print(article.image_url)
+//                            print(" ")
+//
+//                        }
+//                    }else{
+//                        print("articleList is nil")
+//                    }
+//                }
+//            }
+//        }
+        
+        
     }
 }
 

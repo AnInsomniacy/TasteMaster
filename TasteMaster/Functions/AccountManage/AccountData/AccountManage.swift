@@ -154,13 +154,13 @@ struct AccountManage: View{
                 
                 HStack(spacing: -16){
                     //我的文章
-                    NavigationLink(destination: MyArticles(user_id: String(accountDataManager.currentAccountData?.user_id ?? 0)).navigationBarTitle("我的文章")) {
+                    NavigationLink(destination: ArticleManagement(user_id: String(accountDataManager.currentAccountData?.user_id ?? 0)).navigationBarTitle("文章管理")) {
                         RoundedRectangle(cornerRadius: cardData.cornerRadius) // 设置圆角半径
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(
                                 HStack {
                                     
-                                    Text("我的文章: \(accountDataManager.currentAccountData?.article_num ?? 0) ->").foregroundColor(Color.primary)
+                                    Text("文章管理: \(accountDataManager.currentAccountData?.article_num ?? 0) ->").foregroundColor(Color.primary)
                                     
                                 }
                             )
@@ -176,7 +176,7 @@ struct AccountManage: View{
                     }
                     
                     //个人信息
-                    NavigationLink(destination: MyInfo().navigationBarTitle("个人信息")) {
+                    NavigationLink(destination: AccountInfoModify().navigationBarTitle("资料修改")) {
                         RoundedRectangle(cornerRadius: cardData.cornerRadius) // 设置圆角半径
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(
