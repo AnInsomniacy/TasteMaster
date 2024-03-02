@@ -107,35 +107,86 @@ struct MyFans: View {
 
 //我的文章
 struct MyArticles: View {
+    
     @ObservedObject var articleViewModel = ArticleViewModel()
+    @State var user_id: String//要查询的用户ID
     
     var body: some View {
-        Button("debug"){
-            Task{
-                do{
-                    try await articleViewModel.getArticleList(user_id: "2")
-                    if let articleList = articleViewModel.ArticleData?.articleList {
-                        for article in articleList {
-                            print(article.article_title)
-                            
+        
+        
+        ScrollView{
+            VStack(spacing: -16){
+                if let articleList = articleViewModel.ArticleData?.articleList {
+                    ForEach(articleList, id: \.article_id) { article in
+                        ArticleCard(avatarUrl_input: article.image_url, author_name: article.article_author,article_title: article.article_title, article_id: article.article_id)
+                    }
+                } else {
+                    Text("获取文章列表失败")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundColor(.gray)
+                        .padding()
+                }
+            }.onAppear{
+                Task{
+                    do{
+                        try await articleViewModel.getArticleList(user_id: user_id)
+                        if let articleList = articleViewModel.ArticleData?.articleList {
+                            for article in articleList {
+                                print(article.article_title)
+                                print(article.article_author)
+                                print(article.article_id)
+                                print(article.create_time)
+                                print(article.update_time)
+                                print(article.image_url)
+                                print(" ")
+                                
+                            }
+                        }else{
+                            print("articleList is nil")
                         }
-                    }else{
-                        print("articleList is nil")
                     }
                 }
             }
         }
+        
+        
+        
+//        Button("debug"){
+//            Task{
+//                do{
+//                    try await articleViewModel.getArticleList(user_id: "2")
+//                    if let articleList = articleViewModel.ArticleData?.articleList {
+//                        for article in articleList {
+//                            print(article.article_title)
+//                            print(article.article_author)
+//                            print(article.article_content)
+//                            print(article.article_id)
+//                            print(article.create_time)
+//                            print(article.update_time)
+//                            print(article.image_url)
+//                            print(" ")
+//                            
+//                        }
+//                    }else{
+//                        print("articleList is nil")
+//                    }
+//                }
+//            }
+//        }
+        
+        
     }
 }
 
-//个人信息
+//资料修改
 struct MyInfo: View {
     var body: some View {
-        Text("个人信息")
+        Text("资料修改")
     }
 }
 
-//用户主页
+//他人用户主页
 struct UserMainPage: View {
     
     @Environment(\.colorScheme) var colorScheme // 获取当前的配色方案（明亮或黑暗）
@@ -277,7 +328,7 @@ struct UserMainPage: View {
                 
                 HStack(spacing: -16){
                     //我的文章
-                    NavigationLink(destination: MyArticles().navigationBarTitle("TA 的文章")) {
+                    NavigationLink(destination: MyArticles(user_id: String(basicUserInfoViewModel.BasicUserInfo?.currentUserId ?? 0)).navigationBarTitle("TA 的文章")) {
                         RoundedRectangle(cornerRadius: cardData.cornerRadius) // 设置圆角半径
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(
@@ -402,7 +453,7 @@ struct UserMainPage: View {
     NavigationStack{
         //MyFollowers(user_id: "1").navigationTitle("我的关注")
         //MyFans().navigationTitle("我的粉丝")
-        MyArticles()
+        MyArticles(user_id: "2")
         //UserMainPage(user_id:"1")
     }
 }
