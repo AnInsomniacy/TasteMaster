@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import URLImage
+import MarkdownUI
 
 //用户简要卡片信息
 struct UserBriefInfo: View{
@@ -514,8 +515,14 @@ struct ArticleDetailView: View {
                                         .padding()
                                 }
                                 
+                                    //修改日期，用小字体标注
+                                    Text("更新日期: \(article_list.updated_time)")
+                                        .font(.subheadline)
+                                        .foregroundColor(.gray)
+                                        .padding()
+                                
                                 //文章内容
-                                Text(article_list.content)
+                                Markdown(article_list.content)
                                     .padding()
                                 
                                 
@@ -668,9 +675,17 @@ struct ArticleDetailManagementView: View {
                                         .padding()
                                 }
                                 
+                                    
+                                    //修改日期，用小字体标注
+                                    Text("更新日期: \(article_list.updated_time)")
+                                        .font(.subheadline)
+                                        .foregroundColor(.gray)
+                                        .padding()
+                                
                                 //文章内容
-                                Text(article_list.content)
+                                Markdown(article_list.content)
                                     .padding()
+                                
                                 
                                 
                                 
@@ -705,4 +720,9 @@ struct ArticleDetailManagementView: View {
                     }
             }
     }
+}
+
+
+#Preview{
+    ArticleDetailManagementView(article_id: 6)
 }

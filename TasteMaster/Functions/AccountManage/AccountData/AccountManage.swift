@@ -175,13 +175,13 @@ struct AccountManage: View{
                             )
                     }
                     
-                    //个人信息
-                    NavigationLink(destination: AccountInfoModify().navigationBarTitle("资料修改")) {
+                    //创建文章
+                    NavigationLink(destination: ArticleCreation().navigationBarTitle("创建文章")) {
                         RoundedRectangle(cornerRadius: cardData.cornerRadius) // 设置圆角半径
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(
                                 HStack {
-                                    Text("资料修改  ->").foregroundColor(Color.primary)
+                                    Text("创建文章  ->").foregroundColor(Color.primary)
                                 }
                             )
                             .padding()
@@ -194,7 +194,53 @@ struct AccountManage: View{
                                 
                             )
                     }
+                    
+                    
                 }
+                
+                HStack(spacing: -16){
+                    
+                    //搜索用户
+                    NavigationLink(destination:Text("搜索用户").navigationBarTitle("搜索用户")) {
+                        RoundedRectangle(cornerRadius: cardData.cornerRadius) // 设置圆角半径
+                            .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
+                            .overlay(
+                                HStack {
+                                    Text("搜索用户  ->").foregroundColor(Color.primary)
+                                }
+                            )
+                            .padding()
+                            .frame(height: 100) // 设置 HStack 的固定宽度
+                            .shadow(color: colorScheme == .dark ? cardData.cardShadowColorDark : cardData.cardShadowColorLight, radius: 10, x: 10, y: 10)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 15)
+                                    .stroke(colorScheme == .dark ? cardData.cardBorderColorDark : cardData.cardBorderColorLight, lineWidth: 2)
+                                    .padding()
+                                
+                            )
+                    }
+                
+                //资料修改
+                NavigationLink(destination: AccountInfoModify().navigationBarTitle("资料修改")) {
+                    RoundedRectangle(cornerRadius: cardData.cornerRadius) // 设置圆角半径
+                        .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
+                        .overlay(
+                            HStack {
+                                Text("资料修改  ->").foregroundColor(Color.primary)
+                            }
+                        )
+                        .padding()
+                        .frame(height: 100) // 设置 HStack 的固定宽度
+                        .shadow(color: colorScheme == .dark ? cardData.cardShadowColorDark : cardData.cardShadowColorLight, radius: 10, x: 10, y: 10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 15)
+                                .stroke(colorScheme == .dark ? cardData.cardBorderColorDark : cardData.cardBorderColorLight, lineWidth: 2)
+                                .padding()
+                            
+                        )
+                }
+                
+            }
                 
                 
                 //立即登录或退出登录

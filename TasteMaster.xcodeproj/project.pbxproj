@@ -27,7 +27,6 @@
 		B35A17FE2B1C7F8E00B3D4D0 /* AboutMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = B35A17FD2B1C7F8E00B3D4D0 /* AboutMe.swift */; };
 		B35A18002B1C7FD500B3D4D0 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B35A17FF2B1C7FD500B3D4D0 /* AppSettings.swift */; };
 		B35E67312B85C4EF00524780 /* DataConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = B35E67302B85C4EF00524780 /* DataConnector.swift */; };
-		B363F8352B7F04440042DE29 /* Pow in Frameworks */ = {isa = PBXBuildFile; productRef = B363F8342B7F04440042DE29 /* Pow */; };
 		B36515D72B1C7D2600DC18B6 /* CommonProblem.swift in Sources */ = {isa = PBXBuildFile; fileRef = B36515D62B1C7D2600DC18B6 /* CommonProblem.swift */; };
 		B3684F852B1C620600E1127F /* plant_recognization.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3684F842B1C620600E1127F /* plant_recognization.swift */; };
 		B377C6EE2ADA93170099AB83 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = B377C6ED2ADA93170099AB83 /* MarkdownUI */; };
@@ -145,7 +144,6 @@
 			files = (
 				B377C6EE2ADA93170099AB83 /* MarkdownUI in Frameworks */,
 				B3BEDF432B8259560036FCAA /* URLImage in Frameworks */,
-				B363F8352B7F04440042DE29 /* Pow in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,7 +379,6 @@
 			name = TasteMaster;
 			packageProductDependencies = (
 				B377C6ED2ADA93170099AB83 /* MarkdownUI */,
-				B363F8342B7F04440042DE29 /* Pow */,
 				B3BEDF422B8259560036FCAA /* URLImage */,
 			);
 			productName = TasteMaster;
@@ -459,7 +456,6 @@
 			mainGroup = B3F8A7402AD8E8BB00D129D3;
 			packageReferences = (
 				B377C6EC2ADA93170099AB83 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
-				B363F8332B7F04440042DE29 /* XCRemoteSwiftPackageReference "Pow" */,
 				B3BEDF412B8259560036FCAA /* XCRemoteSwiftPackageReference "url-image" */,
 			);
 			productRefGroup = B3F8A74A2AD8E8BB00D129D3 /* Products */;
@@ -938,14 +934,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		B363F8332B7F04440042DE29 /* XCRemoteSwiftPackageReference "Pow" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/EmergeTools/Pow";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.3;
-			};
-		};
 		B377C6EC2ADA93170099AB83 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
@@ -965,11 +953,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		B363F8342B7F04440042DE29 /* Pow */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B363F8332B7F04440042DE29 /* XCRemoteSwiftPackageReference "Pow" */;
-			productName = Pow;
-		};
 		B377C6ED2ADA93170099AB83 /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B377C6EC2ADA93170099AB83 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
