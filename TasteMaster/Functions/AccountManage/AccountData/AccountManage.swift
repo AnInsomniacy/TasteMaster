@@ -181,7 +181,7 @@ struct AccountManage: View{
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(
                                 HStack {
-                                    Text("创建文章  ->").foregroundColor(Color.primary)
+                                    Text("发表文章  ->").foregroundColor(Color.primary)
                                 }
                             )
                             .padding()

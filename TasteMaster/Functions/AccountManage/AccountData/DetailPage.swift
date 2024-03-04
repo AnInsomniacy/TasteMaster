@@ -520,7 +520,8 @@ struct UserMainPage: View {
     NavigationStack{
         //MyFollowers(user_id: "1").navigationTitle("我的关注")
         //MyFans().navigationTitle("我的粉丝")
-        MyArticles(user_id: "2")
+        //MyArticles(user_id: "2")
         //UserMainPage(user_id:"1")
+        ArticleManagement(user_id: "2")
     }
 }
