@@ -105,7 +105,7 @@ struct MyFans: View {
     }
 }
 
-//我的文章
+//他人的文章
 struct MyArticles: View {
     
     @ObservedObject var articleViewModel = ArticleViewModel()
