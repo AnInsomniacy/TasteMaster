@@ -17,7 +17,7 @@ var BasicSkillsCardList = [
     CardInfo(image: "🍲", text: "学习蒸", color: Color(.systemTeal), destination: nil),
     CardInfo(image: "⏲️", text: "学习腌", color: Color(.systemPink), destination: nil),
     CardInfo(image: "🥘", text: "学习煮", color: Color(.systemOrange), destination: nil),
-    CardInfo(image: "🍳", text: "常用器材", color: Color(.systemOrange), destination: AnyView(CommonEquipments())),
+    CardInfo(image: "🍳", text: "常用器材", color: Color(.systemGreen), destination: AnyView(CommonEquipments())),
     CardInfo(image: "💹", text: "食材规划", color: Color(.systemBlue), destination: nil),
     CardInfo(image: "📝", text: "厨房准备", color: Color(.systemPurple), destination: nil),
     CardInfo(image: "✨", text: "辅料技巧", color: Color(.systemIndigo), destination: nil),
