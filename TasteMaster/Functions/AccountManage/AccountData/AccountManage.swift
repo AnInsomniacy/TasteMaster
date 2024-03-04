@@ -201,7 +201,7 @@ struct AccountManage: View{
                 HStack(spacing: -16){
                     
                     //搜索用户
-                    NavigationLink(destination:Text("搜索用户").navigationBarTitle("搜索用户")) {
+                    NavigationLink(destination:SearchAccount().navigationBarTitle("搜索用户")) {
                         RoundedRectangle(cornerRadius: cardData.cornerRadius) // 设置圆角半径
                             .foregroundColor(colorScheme == .dark ? cardData.cardColorDark : cardData.cardColorLight) // 根据配色方案设置背景颜色
                             .overlay(

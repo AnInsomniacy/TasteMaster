@@ -32,6 +32,7 @@
 		B377C6EE2ADA93170099AB83 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = B377C6ED2ADA93170099AB83 /* MarkdownUI */; };
 		B378CA122AE944A600355FD6 /* CookBookData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B378CA112AE944A600355FD6 /* CookBookData.swift */; };
 		B378CA142AE94A0000355FD6 /* Vegetarian.swift in Sources */ = {isa = PBXBuildFile; fileRef = B378CA132AE94A0000355FD6 /* Vegetarian.swift */; };
+		B38648792B95588F004A75CD /* SearchAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38648782B95588F004A75CD /* SearchAccount.swift */; };
 		B399D6122B9353A1009F3D92 /* ArticleModification.swift in Sources */ = {isa = PBXBuildFile; fileRef = B399D6112B9353A1009F3D92 /* ArticleModification.swift */; };
 		B399D6142B9353EF009F3D92 /* ArticleCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B399D6132B9353EF009F3D92 /* ArticleCreation.swift */; };
 		B399D6162B935CB2009F3D92 /* ArticleManageAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B399D6152B935CB1009F3D92 /* ArticleManageAPI.swift */; };
@@ -104,6 +105,7 @@
 		B3684F842B1C620600E1127F /* plant_recognization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = plant_recognization.swift; sourceTree = "<group>"; };
 		B378CA112AE944A600355FD6 /* CookBookData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookBookData.swift; sourceTree = "<group>"; };
 		B378CA132AE94A0000355FD6 /* Vegetarian.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vegetarian.swift; sourceTree = "<group>"; };
+		B38648782B95588F004A75CD /* SearchAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAccount.swift; sourceTree = "<group>"; };
 		B399D6112B9353A1009F3D92 /* ArticleModification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleModification.swift; sourceTree = "<group>"; };
 		B399D6132B9353EF009F3D92 /* ArticleCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleCreation.swift; sourceTree = "<group>"; };
 		B399D6152B935CB1009F3D92 /* ArticleManageAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleManageAPI.swift; sourceTree = "<group>"; };
@@ -192,6 +194,7 @@
 				B3AC78432B941AC60055600C /* BriefCardView.swift */,
 				B32CF65A2B8426E7009DB061 /* DetailPage.swift */,
 				B35E67302B85C4EF00524780 /* DataConnector.swift */,
+				B38648782B95588F004A75CD /* SearchAccount.swift */,
 			);
 			path = AccountData;
 			sourceTree = "<group>";
@@ -540,6 +543,7 @@
 				B35A17FE2B1C7F8E00B3D4D0 /* AboutMe.swift in Sources */,
 				B378CA122AE944A600355FD6 /* CookBookData.swift in Sources */,
 				B30272412AECA33B007DA186 /* Soup.swift in Sources */,
+				B38648792B95588F004A75CD /* SearchAccount.swift in Sources */,
 				B39CF18D2AEE5FB600F988E9 /* AccessTokenFetcher.swift in Sources */,
 				B3F8A7782AD8E8DB00D129D3 /* CardModel.swift in Sources */,
 				B30272432AECA3E5007DA186 /* Drink.swift in Sources */,
