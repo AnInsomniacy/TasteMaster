@@ -183,16 +183,22 @@ struct MyArticles: View {
 struct ArticleManagement: View {
     
     @ObservedObject var articleViewModel = ArticleViewModel()
-    @State var user_id: String//要查询的用户ID
+    @State var user_id: String // 要查询的用户ID
+    @State var articlesData: ArticleData? // 存储文章数据
+    
+    // 文章数据结构
+    struct ArticleData {
+        let articleList: [ArticleInfo]
+    }
+
     
     var body: some View {
         
-        
-        ScrollView{
-            VStack(spacing: -16){
-                if let articleList = articleViewModel.ArticleData?.articleList {
+        ScrollView {
+            VStack(spacing: -16) {
+                if let articleList = articlesData?.articleList {
                     ForEach(articleList, id: \.article_id) { article in
-                        ArticleCardManagement(avatarUrl_input: article.image_url, author_name: article.article_author,article_title: article.article_title, article_id: article.article_id)
+                        ArticleCardManagement(avatarUrl_input: article.image_url, author_name: article.article_author, article_title: article.article_title, article_id: article.article_id)
                     }
                 } else {
                     Text("获取文章列表失败")
@@ -201,11 +207,16 @@ struct ArticleManagement: View {
                         .foregroundColor(.gray)
                         .padding()
                 }
-            }.onAppear{
-                Task{
-                    do{
+            }
+            .onAppear {
+                Task {
+                    do {
                         try await articleViewModel.getArticleList(user_id: user_id)
+                        
                         if let articleList = articleViewModel.ArticleData?.articleList {
+                            // 将数据存储在ArticleData结构体中
+                            articlesData = ArticleData(articleList: articleList)
+                            
                             for article in articleList {
                                 print(article.article_title)
                                 print(article.article_author)
@@ -214,42 +225,16 @@ struct ArticleManagement: View {
                                 print(article.update_time)
                                 print(article.image_url)
                                 print(" ")
-                                
                             }
-                        }else{
+                        } else {
                             print("articleList is nil")
                         }
+                    } catch {
+                        print("Error: \(error.localizedDescription)")
                     }
                 }
             }
         }
-        
-        
-        
-//        Button("debug"){
-//            Task{
-//                do{
-//                    try await articleViewModel.getArticleList(user_id: "2")
-//                    if let articleList = articleViewModel.ArticleData?.articleList {
-//                        for article in articleList {
-//                            print(article.article_title)
-//                            print(article.article_author)
-//                            print(article.article_content)
-//                            print(article.article_id)
-//                            print(article.create_time)
-//                            print(article.update_time)
-//                            print(article.image_url)
-//                            print(" ")
-//
-//                        }
-//                    }else{
-//                        print("articleList is nil")
-//                    }
-//                }
-//            }
-//        }
-        
-        
     }
 }
 

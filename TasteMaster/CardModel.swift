@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-import Pow
 
 //卡片信息结构体
 struct CardModel{

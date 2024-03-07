@@ -421,7 +421,7 @@ struct ArticleDetailManagementView: View {
                                 
                                 VStack(spacing: -60){
                                         Text("")//移除顶部空白
-                                    HStack(spacing: -40){
+                                    VStack(spacing: -80){
                                         if let avatarURLString = articleDetailVM.ArticleDetailData?.article_list?.article_img_url,
                                            let avatarURL = URL(string: avatarURLString) {
                                             URLImage(avatarURL) {
@@ -463,7 +463,7 @@ struct ArticleDetailManagementView: View {
                                                 .padding()
                                         }
                                         
-                                        VStack(spacing: -50){
+                                        HStack(spacing: -50){
 
                                             //修改文章
                                             NavigationLink(destination: ArticleModification(article_id: String(article_list.article_id),articleTitle: article_list.title,imageURLString: article_list.article_img_url,articleContent: article_list.content).navigationTitle("修改文章")){
