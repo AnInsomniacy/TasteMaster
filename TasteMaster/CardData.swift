@@ -33,14 +33,8 @@ var ExtraFunctionsCardList = [
     CardInfo(image: "🔍", text: "全局搜索", color: Color(.systemIndigo), destination: AnyView(GlobalSearch())),
     CardInfo(image: "👩‍🍳", text: "AI 问答", color: Color(.systemRed), destination: AnyView(AIAnalyst())),
     CardInfo(image: "🧐", text: "物品识别", color: Color(.systemGreen), destination: AnyView(ItemRecognizationUI())),
-    CardInfo(image: "🔥", text: "热量分析", color: Color(.systemOrange), destination: nil),
-    CardInfo(image: "🔬", text: "实验室", color: Color(.systemPurple), destination: nil),
-    CardInfo(image: "😋", text: "吃啥好呢?", color: Color(.systemBlue), destination: nil),
-    CardInfo(image: "🔄", text: "卡片更新", color: Color(.systemOrange), destination: AnyView(CardUpdate())),
+    CardInfo(image: "✨", text: "作出贡献", color: Color(.systemPurple), destination: AnyView(ContributeCards())),
     CardInfo(image: "🤵", text: "关于作者", color: Color(.systemBlue), destination: AnyView(AboutMe())),
-    CardInfo(image: "🤔", text: "常见问题", color: Color(.systemPurple), destination: AnyView(CommonProblem())),
-    CardInfo(image: "✨", text: "作出贡献", color: Color(.systemGreen), destination: AnyView(ContributeCards())),
-    CardInfo(image: "⚙️", text: "应用设置", color: Color(.systemBrown), destination: AnyView(AppSettings())),
 ]
 
 //常用器材

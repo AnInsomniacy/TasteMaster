@@ -499,7 +499,8 @@ struct RegisterAccount: View {
     @State private var buttonText = "立即注册"
     @State private var buttonColor = Color.blue
     
-    var registerViewModel = RegisterViewModel() // 你可能需要根据需要修改这里
+    var registerViewModel = RegisterViewModel()
+    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         NavigationStack {
@@ -546,6 +547,23 @@ struct RegisterAccount: View {
                             .cornerRadius(10)
                     }
                     
+                    HStack{
+                        
+                        //返回上一级
+                        Button(action
+                               : {
+                            // 返回上一级
+                            self.presentationMode.wrappedValue.dismiss()
+                        }) {
+                            HStack {
+                                Text("取消注册")
+                                    .foregroundColor(.white)
+                            }
+                            .padding()
+                            .background(Color.pink)
+                            .cornerRadius(10)
+                        }
+                        
                     // 注册按钮
                     Button(action: {
                         Task {
@@ -596,6 +614,7 @@ struct RegisterAccount: View {
                     .padding()
                     .background(buttonColor)
                     .cornerRadius(10)
+                }
                 }
                 .padding()
             }

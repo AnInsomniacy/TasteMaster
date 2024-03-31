@@ -8,8 +8,6 @@
 import Foundation
 import SwiftUI
 
-var baseURL = "http://192.168.3.203:8000"
-
 //卡片颜色和深度信息
 struct AccountCardData {
     //圆角半径

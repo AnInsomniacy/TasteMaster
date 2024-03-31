@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+var baseURL = "http://192.168.6.151:8080"
+
 struct ContentView: View {
     
     @State var selectedTab = 0 // 默认选中的Tab
