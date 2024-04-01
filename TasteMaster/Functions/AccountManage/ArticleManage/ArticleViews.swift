@@ -75,7 +75,7 @@ struct ArticleCard: View {
                             
                             
                             Text("By: \(author_name)")
-                                .font(.title)
+                                .font(.title3)
                                 .fontWeight(.bold)
                                 .lineLimit(1) // 没有行数限制，自动换行
                                 .fixedSize(horizontal: false, vertical: true).padding()

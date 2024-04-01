@@ -580,12 +580,14 @@ struct RegisterAccount: View {
                                     print("注册成功")
                                     // 在这里可以进行导航、显示成功提示等操作
                                     buttonText = "注册成功"
-                                    buttonColor = Color.blue
+                                    buttonColor = Color.green
                                     
                                     // 这里可以根据注册后的需求执行其他操作
-                                    try await Task.sleep(nanoseconds: 2 * 1_000_000_000) // 1秒 = 1,000,000,000纳秒
+                                    try await Task.sleep(nanoseconds: 1_000_000_000) // 1秒 = 1,000,000,000纳秒
+                                    //返回上一级
+                                    self.presentationMode.wrappedValue.dismiss()
                                     buttonText = "立即注册"
-                                    buttonColor = Color.green
+                                    buttonColor = Color.blue
                                 } else {
                                     print("注册失败")
                                     // 在这里可以显示失败提示等操作
@@ -593,7 +595,7 @@ struct RegisterAccount: View {
                                     buttonColor = Color.red
                                     try await Task.sleep(nanoseconds: 2 * 1_000_000_000) // 1秒 = 1,000,000,000纳秒
                                     buttonText = "立即注册"
-                                    buttonColor = Color.green
+                                    buttonColor = Color.blue
                                 }
                             } catch {
                                 // 处理注册错误
@@ -603,7 +605,7 @@ struct RegisterAccount: View {
                                 buttonColor = Color.red
                                 try await Task.sleep(nanoseconds: 2 * 1_000_000_000) // 1秒 = 1,000,000,000纳秒
                                 buttonText = "立即注册"
-                                buttonColor = Color.green
+                                buttonColor = Color.blue
                             }
                         }
                     }) {

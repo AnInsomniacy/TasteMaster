@@ -233,7 +233,8 @@ func CardPlacer(cardInfoList:[CardInfo],color: ColorScheme)->some View{
                 NavigationLink(destination: CookingCard.getContent) {
                     VStack(spacing: card.cardTextImageSpace){
                         
-                        Text(CookingCard.image)           .font(.title)
+                        Text(CookingCard.image)           
+                            .font(.title)
                             .frame(width: card.imageWidth, height: card.imageHeight)
                         
                         Text(CookingCard.text)
